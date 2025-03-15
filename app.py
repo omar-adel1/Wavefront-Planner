@@ -15,10 +15,8 @@ if uploaded_file:
     start_row = st.sidebar.number_input("Enter the starting Y coordinate:", min_value=0, max_value=map_data.shape[0]-1, value=0)
     start_col = st.sidebar.number_input("Enter the starting X coordinate:", min_value=0, max_value=map_data.shape[1]-1, value=0)
 
-    # Run Planner Button in Sidebar
     if st.sidebar.button("Run Planner"):
         try:
-            # Compute wavefront value map and trajectory
             value_map, trajectory = planner(map_data.tolist(), start_row, start_col)
 
             col1, col2 = st.columns(2)
