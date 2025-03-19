@@ -15,33 +15,29 @@ DIRECTIONS = [
     (-1, -1)   # Upper Left
 ]
 
-# ======= Data Handling =======
+# Data Handling 
 def load_mat_file(file) -> np.ndarray:
     """
     Args:
-        file: The uploaded .mat file containing the environment map.
+        .mat file (maze)
 
     Returns:
-        np.ndarray: A NumPy array representing the 2D map where:
-            - 0 represents free space
-            - 1 represents obstacles
-            - 2 represents the goal position
+        0= free space
+        1= obstacles
+        2= end goal position
     """
     mat_data = sio.loadmat(file)
     map_mat = np.squeeze(mat_data['map']).astype(int) 
     return map_mat
 
-# ======= Wavefront Algorithm =======
+# Wavefront Algorithm 
 def find_goal_cell(grid: List[List[int]]) -> Tuple[int, int]:
     """
     Args:
-        grid (List[List[int]]): A 2D list representing the environment map where:
-            - 0 represents free space
-            - 1 represents obstacles
-            - 2 represents the goal position
+        2D list =map (filled with 0, 1, 2)=empty, etc
 
     Returns:
-        Tuple[int, int]: A tuple (row, column) indicating the position of the goal cell.
+        tuple (row, column)= position of goal cell
     """
     for r in range(len(grid)):
         for c in range(len(grid[0])):
@@ -52,15 +48,12 @@ def find_goal_cell(grid: List[List[int]]) -> Tuple[int, int]:
 def propagate_wavefront(grid: List[List[int]], goal: Tuple[int, int]) -> List[List[int]]:
     """
     Args:
-        grid (List[List[int]]): A 2D list representing the environment map where:
-            - 0 represents free space
-            - 1 represents obstacles
-            - 2 represents the goal position.
-        goal (Tuple[int, int]): Coordinates (row, column) of the goal cell.
+        grid 2d list (0, 1, 2)=empty, etc
+        goal tuple
 
     Returns:
-        List[List[int]]: A modified grid where each free cell (0) is assigned a value
-        representing the shortest number of steps to reach the goal.
+        grid where each (0/empty space)= assigned value 
+        of shortest number of steps to reach goal
     """
     wavefront = [row[:] for row in grid]
 
@@ -80,11 +73,11 @@ def propagate_wavefront(grid: List[List[int]], goal: Tuple[int, int]) -> List[Li
 def extract_optimal_trajectory(wavefront: List[List[int]], start: Tuple[int, int]) -> List[Tuple[int, int]]:   
     """
     Args:
-        wavefront (List[List[int]]): A 2D grid with wavefront propagation values.
-        start (Tuple[int, int]): Coordinates (row, column) of the starting position.
+        grid (shortest number of steps)
+        start position tuple (row, column)
 
     Returns:
-        List[Tuple[int, int]]: A list of (row, column) coordinates representing the optimal path.
+        list of (row, column) of optimal path.
     """ 
     if wavefront[start[0]][start[1]] in {0, 1}:
         raise ValueError("Start position is unreachable.")
@@ -108,7 +101,7 @@ def extract_optimal_trajectory(wavefront: List[List[int]], start: Tuple[int, int
             raise ValueError("No valid path found.")
         
         trajectory.append(next_cell)
-        indices.append(next_cell)  # Store visited point
+        indices.append(next_cell) 
         current = next_cell
 
     return trajectory
@@ -116,35 +109,27 @@ def extract_optimal_trajectory(wavefront: List[List[int]], start: Tuple[int, int
 def planner(map_grid: List[List[int]], start_row: int, start_col: int) -> Tuple[List[List[int]], List[Tuple[int, int]]]:
     """
     Args:
-        map_grid (List[List[int]]): A 2D grid representing the environment where:
-            - 0 represents free space
-            - 1 represents obstacles
-            - 2 represents the goal position
-        start_row (int): Row index of the starting position.
-        start_col (int): Column index of the starting position.
+        map grid (0,1,2)
+        start_row 
+        start_col
 
-    Returns:
-        Tuple[List[List[int]], List[Tuple[int, int]]]:
-            - The wavefront grid with propagated distance values.
-            - The optimal trajectory as a list of (row, column) coordinates.
+    Returns:   
+        shortest number of paths grid
+        optimal path= list of (row, column) coordinates.
     """
     goal = find_goal_cell(map_grid)
     wavefront_grid = propagate_wavefront(map_grid, goal)
     trajectory = extract_optimal_trajectory(wavefront_grid, (start_row, start_col))
     return wavefront_grid, trajectory
 
-# ======= Plotting Functions =======
+# Plotting Functions
 def plot_map(map_grid, title="Map"):
     """
     Args:
-        map_grid (List[List[int]]): A 2D list representing the environment where:
-            - 0 represents free space
-            - 1 represents obstacles
-            - 2 represents the goal position
-        title (str): Title of the plot (default is "Map").
+        map grid (0,1,2)
 
     Returns:
-        plt: The generated plot object.
+        generated plot
     """
     plt.figure(figsize=(6, 6))
     plt.imshow(map_grid, cmap='gray', origin='upper')
@@ -157,11 +142,11 @@ def plot_map(map_grid, title="Map"):
 def plot_trajectory(value_map, trajectory):
     """
     Args:
-        value_map (List[List[int]]): A 2D list representing the wavefront value map.
-        trajectory (List[Tuple[int, int]]): A list of (row, column) coordinates forming the optimal path.
+        shortest number of paths map
+        trajectory coordinates list
 
     Returns:
-        plt: The generated plot object.
+        trajectory plot
     """
     value_map_np = np.array(value_map)
     plt.figure(figsize=(6, 6))
@@ -179,3 +164,13 @@ def plot_trajectory(value_map, trajectory):
     plt.xlabel("Column")
     plt.ylabel("Row")
     return plt
+
+def get_trajectory_text(trajectory):
+    """
+    Args:
+        list of trajectory points.
+
+    Returns:
+        string representation of the trajectory, each point on a new line
+    """
+    return "\n".join(str(point) for point in trajectory)

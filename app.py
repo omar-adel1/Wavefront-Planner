@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import Wavefront_Path_functions as functions 
+import os
 
 st.title("Wavefront Path Planner 🚀")
 
@@ -32,12 +33,28 @@ if uploaded_file:
                 st.pyplot(functions.plot_trajectory(value_map, trajectory))
 
             # Value Map 
-            st.write("### Value Map (Numerical Representation)")
-            st.text(np.array(value_map)) 
+            st.write("### Value Map =")
+            st.write(np.array(value_map))
 
             # Trajectory
-            st.write("### trajectory =")
-            st.write(trajectory)
+            trajectory_text = functions.get_trajectory_text(trajectory)
+            
+            traj_col, download_col = st.columns([3, 1])
+            with traj_col:
+                st.write("### Trajectory")
+                st.write(trajectory)
+            
+            # Create the download filename using the uploaded file's name (without extension)
+            filename = os.path.splitext(uploaded_file.name)[0]
+            download_filename = f"{filename} trajectory.txt"
+            
+            with download_col:
+                st.download_button(
+                    label="Download Trajectory",
+                    data=trajectory_text,
+                    file_name=download_filename,
+                    mime="text/plain"
+                )
 
         except ValueError as e:
             st.error(f"Error: {e}")
