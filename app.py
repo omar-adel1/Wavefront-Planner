@@ -44,7 +44,6 @@ if uploaded_file:
                 st.write("### Trajectory")
                 st.write(trajectory)
             
-            # Create the download filename using the uploaded file's name (without extension)
             filename = os.path.splitext(uploaded_file.name)[0]
             download_filename = f"{filename} trajectory.txt"
             
