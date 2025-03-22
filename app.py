@@ -22,8 +22,8 @@ if uploaded_file:
             start_time = time.time()
             value_map, trajectory = functions.planner(map_data.tolist(), start_row, start_col)
 
-            end_time = time.time()  # End timing
-            execution_time = end_time - start_time  # Calculate runtime
+            end_time = time.time()  
+            execution_time = end_time - start_time  
             col1, col2 = st.columns(2)
 
             # Original Map
