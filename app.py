@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import time 
 import Wavefront_Path_functions as functions 
 import os
 
@@ -18,8 +19,11 @@ if uploaded_file:
 
     if st.sidebar.button("Run Planner"):
         try:
+            start_time = time.time()
             value_map, trajectory = functions.planner(map_data.tolist(), start_row, start_col)
 
+            end_time = time.time()  # End timing
+            execution_time = end_time - start_time  # Calculate runtime
             col1, col2 = st.columns(2)
 
             # Original Map
@@ -32,6 +36,7 @@ if uploaded_file:
                 st.write("### Wavefront Value Map with Trajectory")
                 st.pyplot(functions.plot_trajectory(value_map, trajectory))
 
+            st.write(f"### Execution Time: {execution_time:.4f} seconds")
             # Value Map 
             st.write("### Value Map =")
             st.write(np.array(value_map))
