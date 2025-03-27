@@ -39,10 +39,10 @@ def find_goal_cell(grid: List[List[int]]) -> Tuple[int, int]:
     Returns:
         tuple (row, column)= position of goal cell
     """
-    for r in range(len(grid)):
-        for c in range(len(grid[0])):
-            if grid[r][c] == 2:
-                return (r, c)
+    for row in range(len(grid)):
+        for column in range(len(grid[0])):
+            if grid[row][column] == 2:
+                return (row, column)
     raise ValueError("Goal not found in the map (a cell with value 2 is required).")
 
 def propagate_wavefront(grid: List[List[int]], goal: Tuple[int, int]) -> List[List[int]]:
@@ -60,13 +60,14 @@ def propagate_wavefront(grid: List[List[int]], goal: Tuple[int, int]) -> List[Li
     queue = deque([goal])
 
     while queue:
-        r, c = queue.popleft()
-        current_val = wavefront[r][c]
-        for dr, dc in DIRECTIONS:
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < len(wavefront) and 0 <= nc < len(wavefront[0]) and wavefront[nr][nc] == 0:
-                wavefront[nr][nc] = current_val + 1
-                queue.append((nr, nc))
+        current_row, current_col = queue.popleft()
+        current_val = wavefront[current_row][current_col]
+        for row_offset, col_offset in DIRECTIONS:
+            next_row = current_row + row_offset
+            next_col = current_col + col_offset
+            if 0 <= next_row < len(wavefront) and 0 <= next_col < len(wavefront[0]) and wavefront[next_row][next_col] == 0:
+                wavefront[next_row][next_col] = current_val + 1
+                queue.append((next_row, next_col))
 
     return wavefront
 
@@ -83,26 +84,27 @@ def extract_optimal_trajectory(wavefront: List[List[int]], start: Tuple[int, int
         raise ValueError("Start position is unreachable.")
 
     trajectory = [start]
-    indices = list()  # Store visited indices
+    indices = list()  
     indices.append(start)
 
-    current = start
+    current_cell = start
 
-    while wavefront[current[0]][current[1]] != 2:
-        r, c = current
+    while wavefront[current_cell[0]][current_cell[1]] != 2:
+        current_row, current_col = current_cell
         next_cell, min_val = None, wavefront[r][c]
 
-        for dr, dc in DIRECTIONS:
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < len(wavefront) and 0 <= nc < len(wavefront[0]) and wavefront[nr][nc] < min_val and wavefront[nr][nc] != 1:
-                next_cell, min_val = (nr, nc), wavefront[nr][nc]
+        for row_offset, col_offset in DIRECTIONS:
+            neighbor_row = current_row + row_offset
+            neighbor_col = current_col + col_offset
+            if 0 <= neighbor_row < len(wavefront) and 0 <= neighbor_col < len(wavefront[0]) and wavefront[neighbor_row][neighbor_col] < min_val and wavefront[neighbor_row][neighbor_col] != 1:
+                next_cell, min_val = (neighbor_row, neighbor_col), wavefront[neighbor_row][neighbor_col]
 
         if not next_cell:
             raise ValueError("No valid path found.")
         
         trajectory.append(next_cell)
         indices.append(next_cell) 
-        current = next_cell
+        current_cell = next_cell
 
     return trajectory
 
