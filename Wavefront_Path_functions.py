@@ -154,7 +154,7 @@ def plot_trajectory(value_map, trajectory):
     plt.colorbar(label="Wavefront Value")
 
     traj_rows, traj_cols = zip(*trajectory)
-    plt.plot(traj_cols, traj_rows, color='red', linewidth=2, marker='o', markersize=5, label="Trajectory")
+    plt.plot(traj_cols, traj_rows, color='red', linewidth=2, marker='o', markersize=1.5, label="Trajectory")
     
     plt.scatter(traj_cols[0], traj_rows[0], c='green', s=100, label="Start")
     plt.scatter(traj_cols[-1], traj_rows[-1], c='blue', s=100, label="Goal")
