@@ -30,7 +30,7 @@ streamlit run app.py
 ```plaintext
 ├── app.py                  # Main Streamlit application
 ├── Wavefront_Path_functions.py  # Algorithm implementation
-├── input_maps        # Sample environment Folder
+├── input_maps/         # Sample environment Folder
 │   ├── maze.mat   
 │   └── maze1.mat
 │   └── maze2.mat 
