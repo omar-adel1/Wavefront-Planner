@@ -70,6 +70,8 @@ streamlit run app.py
 - `scipy >=1.7` - .mat file handling
 - `matplotlib >=3.5` - Visualization
 
+## Authors
+
 | Name | GitHub | LinkedIn |
 | ---- | ------ | -------- |
 | Omar Adel Hassan | [@Omar_Adel](https://github.com/omar-adel1) | [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/omar-adel-59b707231/) |
